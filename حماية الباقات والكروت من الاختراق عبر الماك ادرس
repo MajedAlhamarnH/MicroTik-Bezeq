@@ -1,0 +1,30 @@
+:local a 1
+:local b 1
+:local host
+:local c
+:if ( $leaseBound = 1 ) do={
+:foreach i in=[/ip dhcp-server lease find address=$leaseActIP mac-address="$leaseActMAC"]  do={
+:set host [/ip dhcp-server lease get $i host-name];
+:set c [:pick $leaseActMAC 0 9];
+}
+:if (( "$host.$b" != ".$b" ) and (!("$host" ~ "iPhone")) and (!("$host" ~ "iPad"))) do={
+:foreach j in=[/ip hotspot ip-binding find comment="$host" type="blocked" disabled=no]  do={
+:foreach d in=[/ip hotspot ip-binding find comment="$host" type="blocked" disabled=no (!(mac-address="$leaseActMAC"))] do={
+/ip hotspot ip-binding remove $d;
+}
+/ip hotspot ip-binding add mac-address="$leaseActMAC" address=$leaseActIP to-address=$leaseActIP server=all comment="$host" type="blocked" disabled=no;
+:foreach t in=[/ip dhcp-server lease find  mac-address="$leaseActMAC" host-name=$host] do={
+/ip dhcp-server lease remove $t;
+}
+set a 0;
+}
+:if ( $a=1 ) do={
+:foreach h in=[/ip dhcp-server lease find host-name="$host" (!(mac-address~$c))]  do={
+/ip hotspot ip-binding add mac-address="$leaseActMAC" address=$leaseActIP to-address=$leaseActIP server=all comment="$host" type="blocked" disabled=no;
+:foreach k in=[/ip dhcp-server lease find host-name="$host"] do={
+/ip dhcp-server lease remove $k;
+}
+}
+}
+}
+}
