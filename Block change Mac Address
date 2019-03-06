@@ -1,0 +1,17 @@
+
+{
+˛:delay 500ms
+˛:local x $user;
+˛:local y [/ip hotspot active get [find user=$x] address];
+˛:local f [/ip hotspot host get [find to-address=$y] address];
+˛:local c [/ip hotspot active get [find user=$x] login-by];
+˛:local b "http-pap";
+˛:local k "http-chap";
+˛:local v "cookie";
+˛:local n [/ip dhcp-server lease get [find active-address=$f] host-name];
+˛if (c = b || c = k || c = v) do={
+˛:log warning "Hostname Shield - $x Login is valid"
+˛/ip firewall address-list add list=$n } else={
+˛if ( [ :len [ ip firewall address-list find where list="$n" ] ] > 0 ) do={ :log warning "Hostname Shield - Login is valid" } else={ip hotspot active remove [find user=$x]
+˛:log warning "Hostname Shield -login not allowed "
+}}}
