@@ -1,0 +1,7 @@
+/ip firewall layer7-protocol
+add name=FREEDOM.CP regexp="^.+(1yf.de|2yf.de|53r.de|resolution.de|freedom.net|y\
+    our-freedom.de|www.your-freedom.de|www.your-freedom.net)"
+	
+/ip firewall filter	
+add action=drop chain=pre-hs-input comment=STOP-FREEDOM-CENTERPOINT layer7-protocol=FREEDOM.CP
+add action=drop chain=input comment=STOP-FREEDOM-CENTERPOINT layer7-protocol=FREEDOM.CP
