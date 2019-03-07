@@ -1,0 +1,22 @@
+ /system scheduler
+add comment="\CD\D0\DD \C7\E1\E5\E6\D3\CA \E4\ED\E3 \C7\E1\DD\C7\D1\DB \DF\E1 20 \CF\DE\ED\DE\C9" disabled=no interval=20m name=host-name on-event=host-name \
+    start-date=feb/24/2015 start-time=18:40:00
+add comment="\CD\D0\DD \E5\E6\D3\CA \E3\E6\C8\C7\ED\E1 \DF\E1 \ED\E6\E3\ED\E4" disabled=no interval=2d name=host-mobile on-event=host-mobile start-date=feb/24/2015 start-time=18:40:00
+
+
+/system script
+add name=host-name source="foreach i in=[/ip dhcp-server lease find dynamic=yes] do\
+    ={\r\
+    \n   :if ([:len [/ip dhcp-server lease get \$i host-name]] = 0) do={\r\
+    \n      /ip dhcp-server lease remove \$i;\r\
+    \n   }\r\
+    \n}"
+add name=host-mobile source="/ip dhcp-server lease remove [find  dynamic=yes host-n\
+    ame~\"BLUS*\"]\r\
+    \n/ip dhcp-server lease remove [find  dynamic=yes host-name~\"android*\"]\r\
+    \n/ip dhcp-server lease remove [find  dynamic=yes host-name~\"Android*\"]\r\
+    \n/ip dhcp-server lease remove [find  dynamic=yes host-name~\"Windows*\"]\r\
+    \n/ip dhcp-server lease remove [find  dynamic=yes host-name~\"iPad*\"]\r\
+    \n/ip dhcp-server lease remove [find  dynamic=yes host-name~\"iPhone*\"]\r\
+    \n/ip dhcp-server lease remove [find  dynamic=yes host-name~\"BLACKBERRY*\"]\r\
+    \n"
